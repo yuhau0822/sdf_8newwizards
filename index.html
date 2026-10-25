@@ -489,6 +489,7 @@ header h1 {
   margin-bottom: 120px;
 }
 
+/* PC版用：左右からのスライドインアニメーション設定 */
 .profile-wrap.left,
 .profile-wrap.right {
   opacity: 0;
@@ -822,13 +823,18 @@ header h1 {
     margin-bottom: 80px;
   }
   
-  .profile-wrap.left { transform: translate3d(-100px,0,0) !important; }
-  .profile-wrap.right { transform: translate3d(100px,0,0) !important; }
+  /* ▼ スマホ版：右から出てくるカクカクを直し、下からフェードアップする動きに変更 ▼ */
+  .profile-wrap.left,
+  .profile-wrap.right {
+    transform: translate3d(0, 50px, 0) !important; /* 横移動ではなく、下から上に */
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
   .profile-wrap.show {
-    transform: translate3d(0,0,0) !important;
+    transform: translate3d(0, 0, 0) !important;
     opacity: 1;
   }
+  /* ▲ ここまで ▲ */
 
   .profile-image {
     position: relative;
@@ -1027,13 +1033,9 @@ header h1 {
         <img src="IMG_0497.JPG" class="magic-bg-img bg-img-2" alt="">
         <img src="IMG_0030.JPG" class="magic-bg-img bg-img-3" alt="">
         <img src="IMG_0015.JPG" class="magic-bg-img bg-img-4" alt="">
-        <img src="IMG_9915.jpg" class="magic-bg-img bg-img-5" alt="">
         <img src="IMG_7074.JPG" class="magic-bg-img bg-img-6" alt="">
         <img src="IMG_0021.JPG" class="magic-bg-img bg-img-7" alt="">
-        <img src="C67E9.JPEG" class="magic-bg-img bg-img-8" alt="">
         <img src="IMG_0501.JPG" class="magic-bg-img bg-img-9" alt="">
-        <img src="IMG_7166.jpeg" class="magic-bg-img bg-img-10" alt="">
-        <img src="IMG_7166.jpg" class="magic-bg-img bg-img-11" alt="">
         <img src="IMG_0500.JPG" class="magic-bg-img bg-img-12" alt="">
         <img src="IMG_0498.JPG" class="magic-bg-img bg-img-13" alt="">
       </div>
@@ -1149,7 +1151,7 @@ header h1 {
             <a href="https://www.instagram.com/__eyre97_/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
               <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
             </a>
-            <a href="https://line.me/ti/p/line_id" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+            <a href="https://line.me/ti/p/1kQLwLkH9W" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
               <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
             </a>
           </div>
