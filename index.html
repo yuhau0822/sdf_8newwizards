@@ -161,7 +161,8 @@ body {
 #main-content.visible {
   opacity: 1;
   height: auto;
-  overflow: visible;
+  overflow-y: visible;
+  overflow-x: hidden; /* 横スクロールを防止 */
   pointer-events: auto;
 }
 
@@ -1396,12 +1397,13 @@ profiles.forEach(function(profile) {
   observer.observe(profile);
 });
 
-// スクロール時のオーブ追従エフェクト
+// スクロール時のオーブ追従エフェクト（移動速度をやや抑えて綺麗に見せる）
 window.addEventListener("scroll", function() {
   const scrolled = window.scrollY;
   const globals = document.querySelectorAll(".global-magic-orbs .parallax-wrap");
   globals.forEach(function(wrap) {
-    wrap.style.transform = `translateY(-${scrolled}px)`;
+    // 0.3倍にしてスクロール速度と調整
+    wrap.style.transform = `translateY(-${scrolled * 0.3}px)`;
   });
 });
 
