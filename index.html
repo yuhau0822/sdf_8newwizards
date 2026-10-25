@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SDF MAGIC - 幹部紹介</title>
+
+<!-- 魔法感溢れるフォント（ひな明朝・Zen Old Mincho）と欧文フォントをGoogle Fontsから読み込み -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Hina+Mincho&family=Noto+Serif+JP:wght@300;400;700&family=Zen+Old+Mincho:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ==================================================
+   基本設定
+================================================== */
+:root {
+  --main-color: #8fb6df;
+  --gold: #d9b76c;
+  --background: #071426;
+  --white: #ffffff;
+  --text: rgba(255,255,255,0.85);
+  --sub-text: rgba(255,255,255,0.7);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Noto Serif JP', "Yu Mincho", "Hiragino Mincho ProN", serif;
+  color: var(--text);
+  background: #071426;
+  overflow-x: hidden;
+}
+
+/* ==================================================
+   合言葉画面（ゲートキーパー）
+================================================== */
+#gatekeeper {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background);
+  transition: opacity 1s ease, visibility 1s ease;
+}
+
+#gatekeeper::before {
+  content: "";
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 50% 15%, #263f68 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, #162f55 0%, transparent 50%);
+  opacity: 0.6;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.gate-content {
+  text-align: center;
+  padding: 40px;
+  background: rgba(7, 20, 38, 0.7);
+  border: 1px solid rgba(217,183,108,0.3);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(217,183,108,0.1);
+  max-width: 90%;
+  width: 400px;
+  animation: floatGate 4s ease-in-out infinite;
+}
+
+@keyframes floatGate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.gate-content h2 {
+  font-family: 'Hina Mincho', serif;
+  color: var(--gold);
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  font-size: 24px;
+  text-shadow: 0 0 10px rgba(217,183,108,0.5);
+}
+
+.gate-content p {
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 25px;
+  color: var(--text);
+}
+
+.gate-input {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(217,183,108,0.5);
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Noto Serif JP', serif;
+  letter-spacing: 2px;
+}
+
+.gate-input:focus {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(217,183,108,0.4);
+}
+
+.gate-button {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #d9b76c, #eadd96);
+  border: none;
+  border-radius: 30px;
+  color: #071426;
+  font-family: 'Hina Mincho', serif;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(217,183,108,0.4);
+}
+
+.gate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(217,183,108,0.8);
+}
+
+#gate-error {
+  color: #ff7676;
+  font-size: 13px;
+  margin-top: 15px;
+  margin-bottom: 0;
+  display: none;
+  letter-spacing: 1px;
+}
+
+/* 合言葉入力前はメインコンテンツを隠す */
+#main-content {
+  opacity: 0;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+}
+
+#main-content.visible {
+  opacity: 1;
+  height: auto;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+
+/* ==================================================
+   ページ全体の魔法背景（ベースのグラデーションのみ固定）
+================================================== */
+.magic-background {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background:
+    radial-gradient(circle at 50% 15%, #263f68 0%, transparent 38%),
+    radial-gradient(circle at 10% 70%, #162f55 0%, transparent 42%),
+    radial-gradient(circle at 90% 80%, #182a4a 0%, transparent 45%),
+    linear-gradient(120deg, #050f1e, #0a1930, #102541, #071426);
+  background-size: 180% 180%, 180% 180%, 180% 180%, 400% 400%;
+  animation: backgroundFlow 25s ease-in-out infinite;
+  will-change: background-position;
+}
+
+@keyframes backgroundFlow {
+  0% { background-position: 0% 0%, 100% 100%, 50% 50%, 0% 50%; }
+  50% { background-position: 100% 50%, 0% 50%, 100% 0%, 100% 50%; }
+  100% { background-position: 0% 0%, 100% 100%, 50% 50%, 0% 50%; }
+}
+
+/* ==================================================
+   パララックス（スクロール連動）ラッパー
+================================================== */
+.parallax-wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ==================================================
+   全セクション共通の浮遊オーブ（光の玉）
+================================================== */
+.global-magic-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+}
+
+.magic-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform;
+  filter: blur(20px);
+}
+
+.orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 10vh; left: -10vw; opacity: 0.5; animation: orbMove1 22s ease-in-out infinite alternate; }
+.orb-2 { width: 600px; height: 600px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 40vh; right: -15vw; opacity: 0.3; animation: orbMove2 28s ease-in-out infinite alternate; }
+.orb-3 { width: 450px; height: 450px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 70vh; left: 10vw; opacity: 0.2; animation: orbMove3 25s ease-in-out infinite alternate; }
+.orb-4 { width: 700px; height: 700px; background: radial-gradient(circle, #214b82 0%, transparent 70%); bottom: -10vh; right: 20vw; opacity: 0.4; animation: orbMove4 30s ease-in-out infinite alternate; }
+.orb-5 { width: 350px; height: 350px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: -5vh; right: 30vw; opacity: 0.25; animation: orbMove5 20s ease-in-out infinite alternate; }
+
+@keyframes orbMove1 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(30vw, 20vh, 0) scale(1.3); } }
+@keyframes orbMove2 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-40vw, -15vh, 0) scale(1.4); } }
+@keyframes orbMove3 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(25vw, -30vh, 0) scale(1.2); } }
+@keyframes orbMove4 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-20vw, -40vh, 0) scale(1.1); } }
+@keyframes orbMove5 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-30vw, 50vh, 0) scale(1.5); } }
+
+/* ==================================================
+   TOP〜STORY限定の浮遊画像エリア
+================================================== */
+.top-section-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.floating-images {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+}
+
+.magic-bg-img {
+  position: absolute;
+  width: clamp(150px, 40vw, 400px);
+  height: clamp(150px, 40vw, 400px);
+  object-fit: cover;
+  opacity: 0.15;
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 70%);
+  mask-image: radial-gradient(circle, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 70%);
+  will-change: transform;
+  z-index: 1;
+}
+
+.bg-img-1 { top: -2%; left: -5%; animation: floatBg1 25s ease-in-out infinite; }
+.bg-img-2 { top: -1%; right: 15%; animation: floatBg2 30s ease-in-out infinite; }
+.bg-img-3 { top: 11%; left: 15%; animation: floatBg3 28s ease-in-out infinite; }
+.bg-img-4 { top: 18%; right: 5%; animation: floatBg1 26s ease-in-out infinite; }
+.bg-img-5 { top: 25%; left: -5%; animation: floatBg2 32s ease-in-out infinite; }
+.bg-img-6 { top: 32%; right: 15%; animation: floatBg3 24s ease-in-out infinite; }
+.bg-img-7 { top: 38%; left: 5%; animation: floatBg1 29s ease-in-out infinite; }
+.bg-img-8 { top: 45%; right: -5%; animation: floatBg2 27s ease-in-out infinite; }
+.bg-img-9 { top: 58%; left: 15%; animation: floatBg3 31s ease-in-out infinite; }
+.bg-img-10 { top: 59%; right: 10%; animation: floatBg1 23s ease-in-out infinite; }
+.bg-img-11 { top: 66%; left: -2%; animation: floatBg2 28s ease-in-out infinite; }
+.bg-img-12 { top: 73%; right: 4%; animation: floatBg3 25s ease-in-out infinite; }
+.bg-img-13 { top: 80%; left: 4%; animation: floatBg1 30s ease-in-out infinite; }
+
+@keyframes floatBg1 {
+  0%, 100% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(60px, 80px, 0) scale(1.1) rotate(10deg); }
+}
+@keyframes floatBg2 {
+  0%, 100% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(-80px, -50px, 0) scale(1.15) rotate(-10deg); }
+}
+@keyframes floatBg3 {
+  0%, 100% { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(40px, -60px, 0) scale(1.05) rotate(5deg); }
+}
+
+/* ==================================================
+   共通・TOP
+================================================== */
+section, header {
+  background: transparent !important;
+}
+
+section {
+  position: relative;
+  padding: 120px 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+header {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  width: 750px;
+  height: 750px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(217,183,108,0.08) 40%, transparent 70%);
+  animation: magicLight 10s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 0;
+}
+
+@keyframes magicLight {
+  0% { transform: scale(0.8) translate3d(0, 0, 0); opacity: 0.4; }
+  100% { transform: scale(1.15) translate3d(30px, -50px, 0); opacity: 1; }
+}
+
+header > div {
+  position: relative;
+  z-index: 2;
+  padding: 0 20px;
+  width: 100%;
+}
+
+header p {
+  line-height: 2;
+  font-size: 18px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+.top-logo {
+  width: clamp(160px, 25vw, 330px);
+  height: auto;
+  border: none;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 25px rgba(217,183,108,0.7));
+  animation: floatLogo 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes floatLogo {
+  0%, 100% { transform: translateY(0) translateZ(0); }
+  50% { transform: translateY(-15px) translateZ(0); filter: drop-shadow(0 0 40px rgba(217,183,108,1)); }
+}
+
+.stars {
+  color: rgba(255,255,255,0.55);
+  font-size: 22px;
+  letter-spacing: 25px;
+  margin-bottom: 25px;
+  animation: stars 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes stars {
+  0%,100% { opacity: 0.25; transform: translateY(0) translateZ(0); }
+  50% { opacity: 0.9; transform: translateY(-10px) translateZ(0); }
+}
+
+header h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(40px, 9vw, 160px);
+  color: white;
+  margin: 10px 0 40px 0;
+  letter-spacing: 12px;
+  line-height: 1.1;
+  text-shadow: 
+    0 0 10px rgba(255,255,255,0.9), 
+    0 0 30px rgba(217,183,108,0.8), 
+    0 0 60px rgba(217,183,108,0.6),
+    0 0 120px rgba(217,183,108,0.3);
+  animation: titleMagic 4s ease-in-out infinite;
+  will-change: text-shadow;
+}
+
+@keyframes titleMagic {
+  0%,100% { text-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 30px rgba(217,183,108,0.6), 0 0 60px rgba(217,183,108,0.4); }
+  50% { text-shadow: 0 0 15px white, 0 0 40px var(--gold), 0 0 90px rgba(217,183,108,0.8), 0 0 150px rgba(217,183,108,0.4); }
+}
+
+/* ==================================================
+   見出し・STORY
+================================================== */
+.title {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.title small {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold);
+  letter-spacing: 4px;
+  font-size: 15px;
+}
+
+.title h2 {
+  color: white;
+  font-size: clamp(28px, 4vw, 38px);
+  margin: 15px 0;
+  text-shadow: 0 0 25px rgba(255,255,255,0.1);
+  font-weight: 400;
+}
+
+.title p {
+  color: var(--sub-text);
+}
+
+.story {
+  text-align: center;
+  max-width: 700px;
+  margin: auto;
+  line-height: 2.4;
+}
+
+.story h3 {
+  color: white;
+  font-size: 26px;
+  font-weight: 400;
+  margin-bottom: 30px;
+  letter-spacing: 3px;
+}
+
+.story p {
+  color: var(--text);
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* ==================================================
+   幹部紹介
+================================================== */
+.magicians-showcase {
+  position: relative;
+  padding-top: 100px;
+}
+
+.showcase-orbs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.orb-showcase-1 { width: 550px; height: 550px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 5%; left: -10%; opacity: 0.35; animation: orbMove1 24s ease-in-out infinite alternate; }
+.orb-showcase-2 { width: 450px; height: 450px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 15%; right: -5%; opacity: 0.25; animation: orbMove2 28s ease-in-out infinite alternate; }
+.orb-showcase-3 { width: 600px; height: 600px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 35%; left: -5%; opacity: 0.2; animation: orbMove3 22s ease-in-out infinite alternate; }
+.orb-showcase-4 { width: 500px; height: 500px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 45%; right: 10%; opacity: 0.3; animation: orbMove4 26s ease-in-out infinite alternate; }
+.orb-showcase-5 { width: 400px; height: 400px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 60%; left: 20%; opacity: 0.25; animation: orbMove5 20s ease-in-out infinite alternate; }
+.orb-showcase-6 { width: 550px; height: 550px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 75%; right: 5%; opacity: 0.3; animation: orbMove1 27s ease-in-out infinite alternate; }
+.orb-showcase-7 { width: 450px; height: 450px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 85%; left: -10%; opacity: 0.2; animation: orbMove3 23s ease-in-out infinite alternate; }
+.orb-showcase-8 { width: 650px; height: 650px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 95%; right: 15%; opacity: 0.25; animation: orbMove2 29s ease-in-out infinite alternate; }
+
+.profile-wrap {
+  position: relative;
+  z-index: 2;
+  width: 100vw;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  margin-bottom: 120px;
+}
+
+.profile-wrap.left,
+.profile-wrap.right {
+  opacity: 0;
+  transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.profile-wrap.left { transform: translate3d(-180px,0,0); }
+.profile-wrap.right { transform: translate3d(180px,0,0); }
+
+.profile-wrap.show {
+  opacity: 1;
+  transform: translate3d(0,0,0) !important;
+}
+
+.profile-image {
+  position: absolute;
+  width: 70vw;
+  height: 90vh;
+  top: 50%;
+  z-index: 1;
+  will-change: transform;
+}
+
+.profile-wrap.left .profile-image { left: -10vw; animation: floatLeft 10s ease-in-out infinite; }
+.profile-wrap.right .profile-image { right: -10vw; animation: floatRight 10s ease-in-out infinite; }
+
+@keyframes floatLeft {
+  0%, 100% { transform: translateY(-50%) scale(1) translateZ(0); }
+  50% { transform: translateY(-53%) scale(1.03) translateX(20px) translateZ(0); }
+}
+
+@keyframes floatRight {
+  0%, 100% { transform: translateY(-50%) scale(1) translateZ(0); }
+  50% { transform: translateY(-53%) scale(1.03) translateX(-20px) translateZ(0); }
+}
+
+.magic-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-wrap.left .magic-photo {
+  -webkit-mask-image: radial-gradient(ellipse at left center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+  mask-image: radial-gradient(ellipse at left center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+}
+
+.profile-wrap.right .magic-photo {
+  -webkit-mask-image: radial-gradient(ellipse at right center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+  mask-image: radial-gradient(ellipse at right center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+}
+
+.profile-text {
+  position: absolute;
+  width: 45vw;
+  max-width: 550px;
+  z-index: 2;
+  padding: 40px;
+}
+
+.profile-wrap.left .profile-text { right: 6vw; }
+.profile-wrap.right .profile-text { left: 6vw; }
+
+.magic-type {
+  display: inline-block;
+  color: #071426;
+  background: linear-gradient(135deg, #d9b76c, #eadd96);
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  box-shadow: 0 0 25px rgba(217,183,108,0.4);
+  font-family: 'Cinzel Decorative', serif;
+}
+
+.profile-role {
+  font-family: 'Hina Mincho', serif;
+  color: var(--gold);
+  font-size: clamp(20px, 3vw, 26px);
+  letter-spacing: 4px;
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 10px rgba(0,0,0,0.9);
+}
+
+.profile-univ {
+  font-family: 'Hina Mincho', serif;
+  color: var(--sub-text);
+  font-size: 15px;
+  letter-spacing: 2px;
+  margin: 0 0 10px 0;
+}
+
+.profile-ruby {
+  font-family: 'Hina Mincho', serif;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.profile-name {
+  font-family: 'Hina Mincho', 'Zen Old Mincho', serif;
+  color: white;
+  font-size: clamp(34px, 4.5vw, 50px);
+  margin: 0 0 20px 0;
+  letter-spacing: 6px;
+  text-shadow: 0 0 30px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.3);
+}
+
+.profile-text p {
+  color: rgba(255,255,255,0.9);
+  line-height: 2.4;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 15px rgba(0,0,0,0.9);
+  font-weight: 300;
+}
+
+.sns-links {
+  display: flex;
+  gap: 40px;
+  margin-top: 25px;
+}
+
+.sns-link {
+  display: inline-block;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sns-icon-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.sns-link:hover {
+  opacity: 1;
+}
+
+.sns-link:hover .sns-icon-img {
+  transform: translateY(-2px) scale(1.15);
+  filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(217, 183, 108, 1)) drop-shadow(0 0 20px rgba(217, 183, 108, 0.8));
+}
+
+/* ==================================================
+   FINAL
+================================================== */
+.final-section-wrapper {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 50px;
+}
+
+.final-orbs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.orb-final-1 { width: 600px; height: 600px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 10%; left: -10%; opacity: 0.4; animation: orbMove1 22s ease-in-out infinite alternate; }
+.orb-final-2 { width: 500px; height: 500px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 40%; right: -5%; opacity: 0.3; animation: orbMove2 25s ease-in-out infinite alternate; }
+.orb-final-3 { width: 450px; height: 450px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 60%; left: 15%; opacity: 0.25; animation: orbMove3 20s ease-in-out infinite alternate; }
+.orb-final-4 { width: 550px; height: 550px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 20%; right: 20%; opacity: 0.2; animation: orbMove4 26s ease-in-out infinite alternate; }
+.orb-final-5 { width: 400px; height: 400px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 75%; right: 10%; opacity: 0.35; animation: orbMove5 24s ease-in-out infinite alternate; }
+
+.floating-images-final {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+}
+
+.final {
+  text-align: center;
+  position: relative;
+  padding: 120px 20px;
+  z-index: 2;
+}
+
+.final p {
+  color: var(--text);
+  line-height: 2.4;
+  letter-spacing: 2px;
+}
+
+.final > h2 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(40px, 6vw, 80px);
+  color: white;
+  letter-spacing: 5px;
+  text-shadow: 0 0 35px rgba(217,183,108,0.5);
+  margin-top: 60px;
+  margin-bottom: 0;
+}
+
+.spells {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin: 50px auto;
+  max-width: 800px;
+  position: relative;
+  padding: 30px 10px;
+}
+
+.spells::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(ellipse at center, rgba(217,183,108,0.2) 0%, rgba(143,182,223,0.08) 45%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: magicPulse 4s ease-in-out infinite alternate;
+  z-index: 0;
+  will-change: transform, opacity;
+}
+
+@keyframes magicPulse {
+  0% { transform: translate(-50%, -50%) scale(0.85) translateZ(0); opacity: 0.3; }
+  100% { transform: translate(-50%, -50%) scale(1.2) translateZ(0); opacity: 0.85; }
+}
+
+.spells span {
+  position: relative;
+  z-index: 1;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.9);
+  background: rgba(7, 20, 38, 0.6);
+  border: 1px solid rgba(217,183,108,0.5);
+  padding: 12px 22px;
+  border-radius: 30px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px rgba(217,183,108,0.15);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: spellFloat 6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.spells span:nth-child(1) { animation-delay: 0.0s; }
+.spells span:nth-child(2) { animation-delay: 0.7s; }
+.spells span:nth-child(3) { animation-delay: 1.4s; }
+.spells span:nth-child(4) { animation-delay: 2.1s; }
+.spells span:nth-child(5) { animation-delay: 2.8s; }
+.spells span:nth-child(6) { animation-delay: 3.5s; }
+.spells span:nth-child(7) { animation-delay: 4.2s; }
+.spells span:nth-child(8) { animation-delay: 4.9s; }
+
+@keyframes spellFloat {
+  0% { transform: translateY(0) scale(1) translateZ(0); border-color: rgba(217,183,108,0.4); box-shadow: 0 0 10px rgba(217,183,108,0.1); }
+  50% { border-color: rgba(217,183,108,0.9); box-shadow: 0 0 22px rgba(217,183,108,0.4), inset 0 0 12px rgba(217,183,108,0.25); }
+  100% { transform: translateY(-8px) scale(1.03) translateZ(0); border-color: rgba(217,183,108,0.5); box-shadow: 0 0 12px rgba(217,183,108,0.15); }
+}
+
+.spells:hover span {
+  border-color: rgba(217,183,108,0.8);
+  box-shadow: 0 0 20px rgba(217,183,108,0.4);
+  color: #ffffff;
+}
+
+.spells span:hover {
+  background: linear-gradient(135deg, #d9b76c, #eadd96) !important;
+  color: #071426 !important;
+  font-weight: bold;
+  transform: translateY(-6px) scale(1.12) translateZ(0) !important;
+  box-shadow: 0 0 35px rgba(217,183,108,0.9), 0 0 60px rgba(255,255,255,0.6) !important;
+  z-index: 2;
+}
+
+/* 魔法の粒 */
+.magic-particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  box-shadow: 0 0 5px white, 0 0 15px var(--gold);
+  animation: particle 3s linear forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes particle {
+  0% { opacity: 0; transform: scale(0) translateZ(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(calc(-50px + 100px * var(--random)), -100px, 0) scale(0); }
+}
+
+.final-bg-1 { top: 5%; left: -2%; animation: floatBg1 25s ease-in-out infinite; }
+.final-bg-2 { top: 10%; right: 5%; animation: floatBg2 28s ease-in-out infinite; }
+.final-bg-3 { top: 40%; left: 10%; animation: floatBg3 26s ease-in-out infinite; }
+.final-bg-4 { top: 55%; right: -5%; animation: floatBg1 30s ease-in-out infinite; }
+.final-bg-5 { top: 75%; left: 25%; animation: floatBg2 27s ease-in-out infinite; }
+
+/* ==================================================
+   ★ スマホ・タブレット対応（レスポンシブ） ★
+================================================== */
+@media (max-width: 850px) {
+  .magic-orb { width: 300px; height: 300px; }
+  .orb-4 { width: 400px; height: 400px; }
+
+  header h1 { font-size: clamp(40px, 12vw, 80px); letter-spacing: 5px; }
+  header p { font-size: 15px; }
+  section { padding: 80px 0; }
+
+  .profile-wrap {
+    flex-direction: column !important;
+    min-height: auto;
+    padding: 0;
+    margin-bottom: 80px;
+  }
+  
+  .profile-wrap.left { transform: translate3d(-100px,0,0) !important; }
+  .profile-wrap.right { transform: translate3d(100px,0,0) !important; }
+
+  .profile-wrap.show {
+    transform: translate3d(0,0,0) !important;
+    opacity: 1;
+  }
+
+  .profile-image {
+    position: relative;
+    width: 100vw;
+    height: 50vh;
+    min-height: 350px;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: translate3d(0,0,0) !important;
+    animation: floatingMobile 6s ease-in-out infinite !important;
+  }
+
+  @keyframes floatingMobile { 
+    0%, 100% { transform: translateY(0) translateZ(0); } 
+    50% { transform: translateY(-10px) translateZ(0); } 
+  }
+
+  .profile-wrap.left .magic-photo, 
+  .profile-wrap.right .magic-photo {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, transparent 100%);
+  }
+
+  .profile-text {
+    position: relative;
+    width: 90vw;
+    max-width: 100%;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 0 15px;
+    margin: -10vh auto 0 auto;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .profile-name { font-size: 32px; letter-spacing: 4px; margin-bottom: 15px; }
+  .profile-role { font-size: 20px; }
+  .profile-text p { font-size: 14px; line-height: 2.2; margin-bottom: 15px; }
+  .story p { font-size: 14px; line-height: 2.2; }
+
+  .sns-links {
+    justify-content: center;
+  }
+
+  .spells { gap: 10px; margin: 40px auto; }
+  .spells span { padding: 10px 16px; font-size: 12px; }
+  .final > h2 { font-size: clamp(30px, 8vw, 50px); margin-top: 40px; }
+
+  .magic-bg-img {
+    width: clamp(200px, 55vw, 350px);
+    height: clamp(200px, 55vw, 350px);
+  }
+
+  .bg-img-1 { top: -2%; left: -15%; }
+  .bg-img-2 { top: 3%; right: -15%; }
+  .bg-img-3 { top: 12%; left: -10%; }
+  .bg-img-4 { top: 20%; right: 5%; }
+  .bg-img-5 { top: 34%; left: -15%; }
+  .bg-img-6 { top: 42%; right: 13%; }
+  .bg-img-7 { top: 30%; left: 0%; }
+  .bg-img-8 { top: 58%; right: -10%; }
+  .bg-img-9 { top: 66%; left: -15%; }
+  .bg-img-10 { top: 60%; right: -15%; }
+  .bg-img-11 { top: 82%; left: -10%; }
+  .bg-img-12 { top: 80%; right: 5%; }
+  .bg-img-13 { top: 82%; left: 0%; }
+
+  .final-bg-1 { top: 5%; left: -15%; }
+  .final-bg-2 { top: 25%; right: -15%; }
+  .final-bg-3 { top: 45%; left: -10%; }
+  .final-bg-4 { top: 65%; right: -10%; }
+  .final-bg-5 { top: 85%; left: 0%; }
+
+  .stars {
+    font-size: 15px;
+    letter-spacing: 4px;
+    text-indent: 4px;
+    white-space: nowrap;
+  }
+}
+
+/* ==================================================
+   ★ スマホ横画面（ランドスケープ）・高さが低い端末用対応 ★
+================================================== */
+@media (max-width: 950px) and (orientation: landscape), (max-height: 500px) {
+  header h1 { font-size: clamp(30px, 8vw, 60px); margin: 10px 0 20px 0; }
+  header p { line-height: 1.5; font-size: 13px; }
+  section { padding: 50px 0; }
+  .title { margin-bottom: 40px; }
+
+  .profile-wrap {
+    flex-direction: row !important;
+    min-height: 100vh;
+    margin-bottom: 50px;
+    align-items: center;
+  }
+  
+  .profile-image {
+    position: absolute !important;
+    width: 55vw !important;
+    height: 90vh !important;
+    min-height: unset !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    animation: none !important;
+  }
+
+  .profile-wrap.left .profile-image { left: -5vw !important; right: auto !important; }
+  .profile-wrap.right .profile-image { right: -5vw !important; left: auto !important; }
+
+  .profile-wrap.left .magic-photo {
+    -webkit-mask-image: radial-gradient(ellipse at left center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+    mask-image: radial-gradient(ellipse at left center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+  }
+  .profile-wrap.right .magic-photo {
+    -webkit-mask-image: radial-gradient(ellipse at right center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+    mask-image: radial-gradient(ellipse at right center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+  }
+
+  .profile-text {
+    position: relative !important;
+    width: 50vw !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 20px !important;
+    text-align: left !important;
+    z-index: 10;
+  }
+
+  .profile-wrap.left .profile-text { left: auto !important; right: 5vw !important; margin-left: auto !important; }
+  .profile-wrap.right .profile-text { right: auto !important; left: 5vw !important; margin-right: auto !important; }
+
+  .profile-name { font-size: 22px; margin-bottom: 10px; letter-spacing: 2px; }
+  .profile-role { font-size: 16px; margin-bottom: 5px; }
+  .profile-univ { font-size: 12px; margin-bottom: 5px; }
+  .profile-ruby { font-size: 10px; }
+  .magic-type { font-size: 10px; padding: 5px 12px; margin-bottom: 15px; }
+  .profile-text p { font-size: 12px; line-height: 1.8; margin-bottom: 10px; }
+  
+  .sns-links { margin-top: 15px; gap: 20px; justify-content: flex-start; }
+  .sns-icon-img { width: 35px; height: 35px; }
+  
+  .spells { margin: 20px auto; }
+  .final > h2 { font-size: clamp(24px, 6vw, 40px); margin-top: 30px; }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 背景の魔法エフェクト（グラデーションの固定背景） -->
+<div class="magic-background"></div>
+
+<!-- ▼▼▼ 合言葉入力画面（ゲートキーパー） ▼▼▼ -->
+<div id="gatekeeper">
+  <div class="gate-content">
+    <h2>秘密の扉</h2>
+    <p>SDFの魔法の世界へ入るための<br>合言葉を入力してください</p>
+    <input type="password" id="gate-password" class="gate-input" placeholder="合言葉を入力">
+    <button id="gate-btn" class="gate-button">扉を開く</button>
+    <p id="gate-error">合言葉が違います</p>
+  </div>
+</div>
+
+<!-- メインコンテンツ（合言葉正解まで隠す） -->
+<div id="main-content">
+
+  <!-- 全セクションにまたがって浮遊する光の玉 -->
+  <div class="global-magic-orbs">
+    <div class="parallax-wrap"><div class="magic-orb orb-1"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-2"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-3"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-4"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-5"></div></div>
+  </div>
+
+  <div style="overflow: hidden; position: relative; width: 100%;">
+
+    <!-- TOP〜STORYセクション -->
+    <div class="top-section-wrapper">
+
+      <div class="floating-images">
+        <img src="IMG_6434.JPG" class="magic-bg-img bg-img-1" alt="">
+        <img src="IMG_0497.JPG" class="magic-bg-img bg-img-2" alt="">
+        <img src="IMG_0030.JPG" class="magic-bg-img bg-img-3" alt="">
+        <img src="IMG_0015.JPG" class="magic-bg-img bg-img-4" alt="">
+        <img src="IMG_9915.jpg" class="magic-bg-img bg-img-5" alt="">
+        <img src="IMG_7074.JPG" class="magic-bg-img bg-img-6" alt="">
+        <img src="IMG_0021.JPG" class="magic-bg-img bg-img-7" alt="">
+        <img src="C67E9.JPEG" class="magic-bg-img bg-img-8" alt="">
+        <img src="IMG_0501.JPG" class="magic-bg-img bg-img-9" alt="">
+        <img src="IMG_7166.jpeg" class="magic-bg-img bg-img-10" alt="">
+        <img src="IMG_7166.jpg" class="magic-bg-img bg-img-11" alt="">
+        <img src="IMG_0500.JPG" class="magic-bg-img bg-img-12" alt="">
+        <img src="IMG_0498.JPG" class="magic-bg-img bg-img-13" alt="">
+      </div>
+
+      <header>
+        <div>
+          <img src="SDFロゴ.svg" alt="SDF Logo" class="top-logo">
+          <div class="stars">✦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✧&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✧&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✦</div>
+          <p>SDFに、新しい8つの魔法がかかる。</p>
+          <h1>8 NEW WIZARDS</h1>
+          <p>これからのSDFをつくるのは、<br>8人の新しい魔法使いたち。</p>
+        </div>
+      </header>
+
+      <section>
+        <div class="container">
+          <div class="title">
+            <small>THE STORY</small>
+            <h2>新しいSDFの物語</h2>
+          </div>
+          <div class="story">
+            <h3>8人、8つの個性。</h3>
+            <p>それぞれ違う個性と想いを持った8人が、SDFに新しい魔法をかけていきます。</p>
+            <p>ひとつの魔法だけでは、物語は完成しない。</p>
+            <p>8つの魔法が重なったとき、新しいSDFが生まれます。</p>
+            <p>さあ、新しい物語のはじまりはじまり。</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 幹部紹介セクション -->
+    <section class="magicians-showcase">
+      
+      <div class="showcase-orbs">
+        <div class="magic-orb orb-showcase-1"></div>
+        <div class="magic-orb orb-showcase-2"></div>
+        <div class="magic-orb orb-showcase-3"></div>
+        <div class="magic-orb orb-showcase-4"></div>
+        <div class="magic-orb orb-showcase-5"></div>
+        <div class="magic-orb orb-showcase-6"></div>
+        <div class="magic-orb orb-showcase-7"></div>
+        <div class="magic-orb orb-showcase-8"></div>
+      </div>
+
+      <div class="container">
+        <div class="title">
+          <small>THE WIZARDS</small>
+          <h2>8人の魔法使い</h2>
+        </div>
+      </div>
+
+      <!-- メンバー 01 -->
+      <div class="profile-wrap left">
+        <div class="profile-image">
+          <img src="IMG_0843.jpg" alt="MEMBER 01" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 01 : CREATE</div>
+          <div class="profile-role">会長</div>
+          <div class="profile-univ">明治大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">さいとう ゆうや</span>斎藤 祐弥</h3>
+          <p>冷静な発想力と親しみやすさを持ち、先輩・後輩を問わず自然と打ち解けられる「発想の魔法使い」。じっくりとアイデアを練って企画を形にする力と、ふとした言動で周囲を笑顔にする意外なユーモアが魅力です。</p>
+          <p>「一人ひとりが主人公になれる、温かさと明るさにあふれた居場所を創り続けます！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/zae_yuya1229/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/jZlPLw1ewf" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- メンバー 02 -->
+      <div class="profile-wrap right">
+        <div class="profile-image">
+          <img src="IMG_0844.JPG" alt="MEMBER 02" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 02 : SUPPORT</div>
+          <div class="profile-role">副会長</div>
+          <div class="profile-univ">明治学院大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">いとう だいき</span>伊藤 大貴</h3>
+          <p>落ち着いた雰囲気と丁寧に話を聞く姿勢が魅力の「着実さの魔法使い」。周囲をよく見てさりげなく仲間を支え、連絡や準備もスピーディーにこなします。マーベルへの深い知識と愛も持ち合わせた、頼れる縁の下の力持ちです。</p>
+          <p>「皆さんが思い描く素敵なサークル像を形にするため全力でお仕事させていただきます！冒険とイマジネーションに溢れるサークルを作っていくのでこれからも楽しんでください！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/daiki_9r0nk/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/6tsEthr5SA" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- メンバー 03 -->
+      <div class="profile-wrap left">
+        <div class="profile-image">
+          <img src="IMG_0890.JPG" alt="MEMBER 03" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 03 : PRECISION</div>
+          <div class="profile-role">副会長</div>
+          <div class="profile-univ">お茶の水女子大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">いのうえ ようこ</span>井上 瑶子</h3>
+          <p>上品で落ち着いた雰囲気と、気さくで親しみやすい一面を持つ「精密さの魔法使い」。頭の回転が速く、冷静な判断力と正確な仕事ぶりでSDFを支えます。ディズニー・チャンネルやマーベルへの深い愛も魅力です。</p>
+          <p>「一人ひとりの想いに寄り添い、かけがえのない思い出が生まれるサークルを作っていきたいです！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/__eyre97_/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/line_id" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- メンバー 04 -->
+      <div class="profile-wrap right">
+        <div class="profile-image">
+          <img src="IMG_20261022_.jpg" alt="MEMBER 04" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 04 : SPARK</div>
+          <div class="profile-role">広報</div>
+          <div class="profile-univ">千葉工業大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">はらぐち ゆう</span>原口 由</h3>
+          <p>明るい笑顔と抜群のコミュニケーション力で、誰とでもすぐに打ち解ける「ひらめきの魔法使い」。豊かな発想力と行動力で、イベントの企画進行からデザイン、SNS運営まで幅広く活躍し、SDFに新しい風を吹き込みます。</p>
+          <p>「今しかできないこと、やってみたいを形にしていきます！デザインお任せください！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/yuhau_life/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/MLXlzOwolg" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- メンバー 05 -->
+      <div class="profile-wrap left">
+        <div class="profile-image">
+          <img src="IMG_0896.JPG" alt="MEMBER 05" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 05 : HARMONY</div>
+          <div class="profile-role">広報</div>
+          <div class="profile-univ">明治学院大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">ひもり こころ</span>檜森 心路</h3>
+          <p>自然体の優しさと広い視野を持ち、公平な意見で周囲を支える「調和の魔法使い」。ふとした一言で場を和ませながら、人と人の気持ちをつなぎ、SDFに安心感とバランスをもたらします。</p>
+          <p>「色んな楽しみ方を共有しながら素敵な思い出をつくりましょう！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/co_7llk_" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/7I2vKZHqVx" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- メンバー 06 -->
+      <div class="profile-wrap right">
+        <div class="profile-image">
+          <img src="IMG_0855.JPG" alt="MEMBER 06" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 06 : TRUST</div>
+          <div class="profile-role">会計</div>
+          <div class="profile-univ">聖路加国際大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">おおつき まお</span>大月 真央</h3>
+          <p>相手の声を丁寧に受け止め、周囲への気配りを忘れない「信頼の魔法使い」。会計や経費対応を着実に進める責任感と、幅広いディズニー愛で人と人をつなぐ力を持ち、SDFを支えます。</p>
+          <p>「この度会計を務めることになりました！SDFのお財布担当として皆さんのお金も笑顔も大切にします！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/cocoa.0809/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/FfkOCeZr-j" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- メンバー 07 -->
+      <div class="profile-wrap left">
+        <div class="profile-image">
+          <img src="IMG_0839.jpg" alt="MEMBER 07" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 07 : CONNECT</div>
+          <div class="profile-role">内務</div>
+          <div class="profile-univ">法政大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">いなみ そら</span>稲見 空</h3>
+          <p>人と人をつなぎ、場を盛り上げる「コミュニケーションの魔法使い。」 持ち前の明るさを活かして日々活動しています。</p>
+          <p>「俺のミニーになってくれませんか？」</p>
+        </div>
+      </div>
+
+      <!-- メンバー 08 -->
+      <div class="profile-wrap right">
+        <div class="profile-image">
+          <img src="IMG_0854.JPG" alt="MEMBER 08" class="magic-photo">
+        </div>
+        <div class="profile-text">
+          <div class="magic-type">MAGIC 08 : CLARITY</div>
+          <div class="profile-role">内務</div>
+          <div class="profile-univ">武蔵大学</div>
+          <h3 class="profile-name"><span class="profile-ruby">かけがわ ひより</span>掛川 日和</h3>
+          <p>周りの意見を受け止め、考えをわかりやすく伝える「言語化の魔法使い」。仲良くなるほど明るく元気な一面が見え、温かなリアクションで場を和ませます。仕事も素早く丁寧にこなし、誰もが安心して話せる雰囲気をつくります。</p>
+          <p>「皆さんと一緒に、楽しくて幸せな思い出をたくさん作りたいです！」</p>
+          <div class="sns-links">
+            <a href="https://www.instagram.com/__pyanya/" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="Instagram Profile">
+              <img src="Instagram_Glyph_Black.svg" alt="Instagram" class="sns-icon-img">
+            </a>
+            <a href="https://line.me/ti/p/2rnw70h8Io" target="_blank" rel="noopener noreferrer" class="sns-link" aria-label="LINE Profile">
+              <img src="LINE_Brand_icon_RGB.svg" alt="LINE" class="sns-icon-img">
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- FINALセクション -->
+    <div class="final-section-wrapper">
+      
+      <div class="final-orbs">
+        <div class="magic-orb orb-final-1"></div>
+        <div class="magic-orb orb-final-2"></div>
+        <div class="magic-orb orb-final-3"></div>
+        <div class="magic-orb orb-final-4"></div>
+        <div class="magic-orb orb-final-5"></div>
+      </div>
+
+      <div class="floating-images-final">
+        <img src="IMG_0499.JPG" class="magic-bg-img final-bg-1" alt="">
+        <img src="IMG_0071.JPG" class="magic-bg-img final-bg-2" alt="">
+        <img src="IMG_0009.JPG" class="magic-bg-img final-bg-3" alt="">
+        <img src="IMG_0019.JPG" class="magic-bg-img final-bg-4" alt="">
+        <img src="IMG_0016.JPG" class="magic-bg-img final-bg-5" alt="">
+      </div>
+
+      <section class="final">
+        <div class="title">
+          <small>THE NEW SDF</small>
+          <h2>8つの魔法が、ひとつになる。</h2>
+        </div>
+        <p>違う個性。違う想い。<br>だからこそ、ひとつになったときに<br>新しい物語が生まれる。</p>
+        
+        <div class="spells">
+          <span>CREATE</span>
+          <span>SUPPORT</span>
+          <span>PRECISION</span>
+          <span>SPARK</span>
+          <span>HARMONY</span>
+          <span>TRUST</span>
+          <span>CONNECT</span>
+          <span>CLARITY</span>
+        </div>
+        
+        <h2>SOPHIA DISNEY FANS</h2>
+      </section>
+    </div>
+
+  </div>
+</div>
+
+<!-- JavaScriptスクリプト -->
+<script>
+// ==============================================
+// ★ ここで「合言葉」を設定します ★
+// ==============================================
+const SECRET_WORD = "198304SDF15"; 
+
+// ゲートキーパー（合言葉）の処理
+const gatekeeper = document.getElementById('gatekeeper');
+const gateBtn = document.getElementById('gate-btn');
+const gateInput = document.getElementById('gate-password');
+const gateError = document.getElementById('gate-error');
+const mainContent = document.getElementById('main-content');
+
+function checkPassword() {
+  if (gateInput.value === SECRET_WORD) {
+    // 正解の場合：ゲートを隠してメインコンテンツを表示
+    gateError.style.display = 'none';
+    gatekeeper.style.opacity = '0';
+    gatekeeper.style.visibility = 'hidden';
+    mainContent.classList.add('visible');
+    
+    // 正解時に魔法のパーティクルを発生
+    const rect = gateBtn.getBoundingClientRect();
+    createMagicBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    
+  } else {
+    // 不正解の場合：エラーメッセージを表示して入力欄を揺らす
+    gateError.style.display = 'block';
+    gateInput.style.transform = 'translateX(-10px)';
+    setTimeout(() => gateInput.style.transform = 'translateX(10px)', 50);
+    setTimeout(() => gateInput.style.transform = 'translateX(-10px)', 100);
+    setTimeout(() => gateInput.style.transform = 'translateX(0)', 150);
+    gateInput.value = '';
+  }
+}
+
+gateBtn.addEventListener('click', checkPassword);
+gateInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    checkPassword();
+  }
+});
+
+
+// ==============================================
+// 既存の魔法演出スクリプト
+// ==============================================
+
+// クリック時の魔法パーティクル生成
+document.addEventListener("click", function(event) {
+  // 合言葉画面が出ているときは、メインコンテンツ外のクリックでも出ないようにする
+  if (mainContent.classList.contains('visible') || event.target.closest('#gatekeeper')) {
+    createMagicBurst(event.clientX, event.clientY);
+  }
+});
+
+function createMagicBurst(x, y) {
+  for (let i = 0; i < 10; i++) {
+    const particle = document.createElement("div");
+    particle.className = "magic-particle";
+    particle.style.left = x + "px";
+    particle.style.top = y + "px";
+    particle.style.setProperty("--random", Math.random());
+    document.body.appendChild(particle);
+    setTimeout(function() {
+      particle.remove();
+    }, 3000);
+  }
+}
+
+// スクロールに応じたフェードイン監視（幹部紹介用）
+const profiles = document.querySelectorAll(".profile-wrap");
+const observer = new IntersectionObserver(
+  function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+
+profiles.forEach(function(profile) {
+  observer.observe(profile);
+});
+
+// スクロール時のオーブ追従エフェクト
+window.addEventListener("scroll", function() {
+  const scrolled = window.scrollY;
+  const globals = document.querySelectorAll(".global-magic-orbs .parallax-wrap");
+  globals.forEach(function(wrap) {
+    wrap.style.transform = `translateY(-${scrolled}px)`;
+  });
+});
+
+// 定期的に浮遊粒子をランダム生成
+setInterval(function() {
+  if (mainContent.classList.contains('visible')) {
+    const particle = document.createElement("div");
+    particle.className = "magic-particle";
+    particle.style.left = Math.random() * window.innerWidth + "px";
+    particle.style.top = Math.random() * window.innerHeight + "px";
+    particle.style.setProperty("--random", Math.random());
+    document.body.appendChild(particle);
+    setTimeout(function() {
+      particle.remove();
+    }, 3000);
+  }
+}, 700);
+
+</script>
+
+</body>
+</html>
