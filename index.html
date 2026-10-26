@@ -227,7 +227,6 @@ body {
 .orb-4 { width: 700px; height: 700px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 120vh; right: -10vw; opacity: 0.4; animation: orbMove4 30s ease-in-out infinite alternate; }
 .orb-5 { width: 350px; height: 350px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 170vh; left: 20vw; opacity: 0.25; animation: orbMove5 20s ease-in-out infinite alternate; }
 
-/* ▼ 追加したオーブ（スクロールで上に移動しても空白ができないように配置） ▼ */
 .orb-6 { width: 550px; height: 550px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 220vh; right: 20vw; opacity: 0.35; animation: orbMove1 24s ease-in-out infinite alternate; }
 .orb-7 { width: 450px; height: 450px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 270vh; left: -5vw; opacity: 0.25; animation: orbMove3 26s ease-in-out infinite alternate; }
 .orb-8 { width: 600px; height: 600px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 330vh; right: -10vw; opacity: 0.3; animation: orbMove2 28s ease-in-out infinite alternate; }
@@ -833,16 +832,20 @@ header h1 {
     margin-bottom: 80px;
   }
   
+  /* ▼ 修正点：スマホ版でのフェードアップアニメーションをより滑らかに */
   .profile-wrap.left,
   .profile-wrap.right {
-    transform: translate3d(0, 50px, 0) !important;
-    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    opacity: 0 !important;
+    transform: translate3d(0, 60px, 0) !important;
+    /* 動き出しを少しゆったり、減速を滑らかにする設定 */
+    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 
   .profile-wrap.show {
+    opacity: 1 !important;
     transform: translate3d(0, 0, 0) !important;
-    opacity: 1;
   }
+  /* ▲ ここまで */
 
   .profile-image {
     position: relative;
@@ -1402,29 +1405,38 @@ function createMagicBurst(x, y) {
   }
 }
 
-// スクロールに応じたフェードイン監視（幹部紹介用）
+// ▼ 修正点：スクロールに応じたフェードイン監視（幹部紹介用） ▼
 const profiles = document.querySelectorAll(".profile-wrap");
+
+// スマホ画面など縦長レイアウトで発火が遅れないように調整
+const observerOptions = {
+  rootMargin: "0px 0px -5% 0px", // 画面の下から5%の位置で判定
+  threshold: window.innerWidth <= 850 ? 0.05 : 0.15 // スマホは5%見えたら即発火
+};
+
 const observer = new IntersectionObserver(
-  function(entries) {
+  function(entries, obs) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
         entry.target.classList.add("show");
+        // スマホ等でのスクロールのカクつき（処理落ち）を防ぐため、一度表示したら監視を解除
+        obs.unobserve(entry.target);
       }
     });
   },
-  { threshold: 0.15 }
+  observerOptions
 );
 
 profiles.forEach(function(profile) {
   observer.observe(profile);
 });
 
-// ▼ 修正点：スクロール時のオーブ追従エフェクト（移動速度を上げ、背景画像に近い速さにする） ▼
+
+// スクロール時のオーブ追従エフェクト
 window.addEventListener("scroll", function() {
   const scrolled = window.scrollY;
   const globals = document.querySelectorAll(".global-magic-orbs .parallax-wrap");
   globals.forEach(function(wrap) {
-    // スクロール速度を 0.6 倍に設定し、しっかり上に動くようにする（追加した15個のオーブが湧いてきます）
     wrap.style.transform = `translateY(-${scrolled * 0.6}px)`;
   });
 });
