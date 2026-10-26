@@ -495,12 +495,9 @@ header h1 {
   width: 100vw;
   min-height: 85vh;
   display: flex;
-  align-items: center; /* 縦中央揃え */
+  align-items: center;
   margin-bottom: 120px;
 }
-
-.profile-wrap.left { justify-content: flex-end; }
-.profile-wrap.right { justify-content: flex-start; }
 
 /* PC版用：左右からのスライドインアニメーション設定 */
 .profile-wrap.left,
@@ -510,8 +507,8 @@ header h1 {
   will-change: opacity, transform;
 }
 
-.profile-wrap.left { transform: translate3d(-150px,0,0); }
-.profile-wrap.right { transform: translate3d(150px,0,0); }
+.profile-wrap.left { transform: translate3d(-180px,0,0); }
+.profile-wrap.right { transform: translate3d(180px,0,0); }
 
 .profile-wrap.show {
   opacity: 1;
@@ -556,17 +553,16 @@ header h1 {
   mask-image: radial-gradient(ellipse at right center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
 }
 
-/* 修正点：テキストをabsoluteからrelativeに変更し、レイアウト崩れを防ぐ */
 .profile-text {
-  position: relative;
+  position: absolute;
   width: 45vw;
   max-width: 550px;
   z-index: 2;
   padding: 40px;
 }
 
-.profile-wrap.left .profile-text { margin-right: 6vw; }
-.profile-wrap.right .profile-text { margin-left: 6vw; }
+.profile-wrap.left .profile-text { right: 6vw; }
+.profile-wrap.right .profile-text { left: 6vw; }
 
 .magic-type {
   display: inline-block;
@@ -834,24 +830,22 @@ header h1 {
     min-height: auto;
     padding: 0;
     margin-bottom: 80px;
-    justify-content: center;
   }
   
-  /* スマホ版でも左右からスライドインするように修正 */
-  .profile-wrap.left {
-    opacity: 0 !important;
-    transform: translate3d(-100px, 0, 0) !important;
-    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
-  }
+  /* ▼ 修正点：スマホ版でのフェードアップアニメーションをより滑らかに */
+  .profile-wrap.left,
   .profile-wrap.right {
     opacity: 0 !important;
-    transform: translate3d(100px, 0, 0) !important;
+    transform: translate3d(0, 60px, 0) !important;
+    /* 動き出しを少しゆったり、減速を滑らかにする設定 */
     transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
+
   .profile-wrap.show {
     opacity: 1 !important;
     transform: translate3d(0, 0, 0) !important;
   }
+  /* ▲ ここまで */
 
   .profile-image {
     position: relative;
@@ -883,13 +877,9 @@ header h1 {
     left: 0 !important;
     right: 0 !important;
     padding: 0 15px;
+    margin: -10vh auto 0 auto;
     text-align: center;
     z-index: 10;
-  }
-  
-  .profile-wrap.left .profile-text,
-  .profile-wrap.right .profile-text {
-    margin: -10vh auto 0 auto !important; /* PC版の横マージンをリセットし、上に被せる */
   }
 
   .profile-name { font-size: 32px; letter-spacing: 4px; margin-bottom: 15px; }
@@ -953,8 +943,6 @@ header h1 {
     margin-bottom: 50px;
     align-items: center;
   }
-  .profile-wrap.left { justify-content: flex-end !important; }
-  .profile-wrap.right { justify-content: flex-start !important; }
   
   .profile-image {
     position: absolute !important;
@@ -988,8 +976,8 @@ header h1 {
     z-index: 10;
   }
 
-  .profile-wrap.left .profile-text { margin-right: 5vw !important; margin-left: auto !important; }
-  .profile-wrap.right .profile-text { margin-left: 5vw !important; margin-right: auto !important; }
+  .profile-wrap.left .profile-text { left: auto !important; right: 5vw !important; margin-left: auto !important; }
+  .profile-wrap.right .profile-text { right: auto !important; left: 5vw !important; margin-right: auto !important; }
 
   .profile-name { font-size: 22px; margin-bottom: 10px; letter-spacing: 2px; }
   .profile-role { font-size: 16px; margin-bottom: 5px; }
@@ -1045,7 +1033,7 @@ header h1 {
     <div class="parallax-wrap"><div class="magic-orb orb-3"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-4"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-5"></div></div>
-    <!-- 追加した10個 -->
+    <!-- ▼ 追加した10個（スクロールして上に移動しても下から湧き続けるように配置） ▼ -->
     <div class="parallax-wrap"><div class="magic-orb orb-6"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-7"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-8"></div></div>
@@ -1417,12 +1405,13 @@ function createMagicBurst(x, y) {
   }
 }
 
-// ▼ スクロールに応じたフェードイン監視（幹部紹介用） ▼
+// ▼ 修正点：スクロールに応じたフェードイン監視（幹部紹介用） ▼
 const profiles = document.querySelectorAll(".profile-wrap");
 
+// スマホ画面など縦長レイアウトで発火が遅れないように調整
 const observerOptions = {
-  rootMargin: "0px 0px -5% 0px",
-  threshold: window.innerWidth <= 850 ? 0.05 : 0.15
+  rootMargin: "0px 0px -5% 0px", // 画面の下から5%の位置で判定
+  threshold: window.innerWidth <= 850 ? 0.05 : 0.15 // スマホは5%見えたら即発火
 };
 
 const observer = new IntersectionObserver(
