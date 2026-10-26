@@ -162,13 +162,12 @@ body {
   opacity: 1;
   height: auto;
   overflow-y: visible;
-  overflow-x: hidden; /* 横スクロールを防止 */
+  overflow-x: hidden;
   pointer-events: auto;
 }
 
-
 /* ==================================================
-   ページ全体の魔法背景（ベースのグラデーションのみ固定）
+   ページ全体の魔法背景
 ================================================== */
 .magic-background {
   position: fixed;
@@ -191,7 +190,7 @@ body {
 }
 
 /* ==================================================
-   パララックス（スクロール連動）ラッパー
+   パララックスラッパー
 ================================================== */
 .parallax-wrap {
   position: absolute;
@@ -204,7 +203,7 @@ body {
 }
 
 /* ==================================================
-   全セクション共通の浮遊オーブ（光の玉）
+   全セクション共通の浮遊オーブ（光の玉） 15個に増量
 ================================================== */
 .global-magic-orbs {
   position: fixed;
@@ -225,8 +224,20 @@ body {
 .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 10vh; left: -10vw; opacity: 0.5; animation: orbMove1 22s ease-in-out infinite alternate; }
 .orb-2 { width: 600px; height: 600px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 40vh; right: -15vw; opacity: 0.3; animation: orbMove2 28s ease-in-out infinite alternate; }
 .orb-3 { width: 450px; height: 450px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 70vh; left: 10vw; opacity: 0.2; animation: orbMove3 25s ease-in-out infinite alternate; }
-.orb-4 { width: 700px; height: 700px; background: radial-gradient(circle, #214b82 0%, transparent 70%); bottom: -10vh; right: 20vw; opacity: 0.4; animation: orbMove4 30s ease-in-out infinite alternate; }
-.orb-5 { width: 350px; height: 350px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: -5vh; right: 30vw; opacity: 0.25; animation: orbMove5 20s ease-in-out infinite alternate; }
+.orb-4 { width: 700px; height: 700px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 120vh; right: -10vw; opacity: 0.4; animation: orbMove4 30s ease-in-out infinite alternate; }
+.orb-5 { width: 350px; height: 350px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 170vh; left: 20vw; opacity: 0.25; animation: orbMove5 20s ease-in-out infinite alternate; }
+
+/* ▼ 追加したオーブ（スクロールで上に移動しても空白ができないように配置） ▼ */
+.orb-6 { width: 550px; height: 550px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 220vh; right: 20vw; opacity: 0.35; animation: orbMove1 24s ease-in-out infinite alternate; }
+.orb-7 { width: 450px; height: 450px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 270vh; left: -5vw; opacity: 0.25; animation: orbMove3 26s ease-in-out infinite alternate; }
+.orb-8 { width: 600px; height: 600px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 330vh; right: -10vw; opacity: 0.3; animation: orbMove2 28s ease-in-out infinite alternate; }
+.orb-9 { width: 500px; height: 500px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 380vh; left: 15vw; opacity: 0.2; animation: orbMove4 25s ease-in-out infinite alternate; }
+.orb-10 { width: 400px; height: 400px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 440vh; right: 25vw; opacity: 0.4; animation: orbMove5 22s ease-in-out infinite alternate; }
+.orb-11 { width: 650px; height: 650px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 500vh; left: -10vw; opacity: 0.3; animation: orbMove1 27s ease-in-out infinite alternate; }
+.orb-12 { width: 500px; height: 500px; background: radial-gradient(circle, #dcecff 0%, transparent 70%); top: 550vh; right: 10vw; opacity: 0.25; animation: orbMove3 21s ease-in-out infinite alternate; }
+.orb-13 { width: 550px; height: 550px; background: radial-gradient(circle, #d9b76c 0%, transparent 70%); top: 610vh; left: 20vw; opacity: 0.3; animation: orbMove2 29s ease-in-out infinite alternate; }
+.orb-14 { width: 700px; height: 700px; background: radial-gradient(circle, #214b82 0%, transparent 70%); top: 670vh; right: -5vw; opacity: 0.2; animation: orbMove4 24s ease-in-out infinite alternate; }
+.orb-15 { width: 450px; height: 450px; background: radial-gradient(circle, #315f9b 0%, transparent 70%); top: 730vh; left: 10vw; opacity: 0.4; animation: orbMove1 23s ease-in-out infinite alternate; }
 
 @keyframes orbMove1 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(30vw, 20vh, 0) scale(1.3); } }
 @keyframes orbMove2 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-40vw, -15vh, 0) scale(1.4); } }
@@ -810,7 +821,6 @@ header h1 {
 ================================================== */
 @media (max-width: 850px) {
   .magic-orb { width: 300px; height: 300px; }
-  .orb-4 { width: 400px; height: 400px; }
 
   header h1 { font-size: clamp(40px, 12vw, 80px); letter-spacing: 5px; }
   header p { font-size: 15px; }
@@ -823,18 +833,16 @@ header h1 {
     margin-bottom: 80px;
   }
   
-  /* ▼ スマホ版：右から出てくるカクカクを直し、下からフェードアップする動きに変更 ▼ */
   .profile-wrap.left,
   .profile-wrap.right {
-    transform: translate3d(0, 50px, 0) !important; /* 横移動ではなく、下から上に */
-    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translate3d(0, 50px, 0) !important;
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   .profile-wrap.show {
     transform: translate3d(0, 0, 0) !important;
     opacity: 1;
   }
-  /* ▲ ここまで ▲ */
 
   .profile-image {
     position: relative;
@@ -1016,11 +1024,23 @@ header h1 {
 
   <!-- 全セクションにまたがって浮遊する光の玉 -->
   <div class="global-magic-orbs">
+    <!-- 初期の5個 -->
     <div class="parallax-wrap"><div class="magic-orb orb-1"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-2"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-3"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-4"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-5"></div></div>
+    <!-- ▼ 追加した10個（スクロールして上に移動しても下から湧き続けるように配置） ▼ -->
+    <div class="parallax-wrap"><div class="magic-orb orb-6"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-7"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-8"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-9"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-10"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-11"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-12"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-13"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-14"></div></div>
+    <div class="parallax-wrap"><div class="magic-orb orb-15"></div></div>
   </div>
 
   <div style="overflow: hidden; position: relative; width: 100%;">
@@ -1399,13 +1419,13 @@ profiles.forEach(function(profile) {
   observer.observe(profile);
 });
 
-// スクロール時のオーブ追従エフェクト（移動速度をやや抑えて綺麗に見せる）
+// ▼ 修正点：スクロール時のオーブ追従エフェクト（移動速度を上げ、背景画像に近い速さにする） ▼
 window.addEventListener("scroll", function() {
   const scrolled = window.scrollY;
   const globals = document.querySelectorAll(".global-magic-orbs .parallax-wrap");
   globals.forEach(function(wrap) {
-    // 0.3倍にしてスクロール速度と調整
-    wrap.style.transform = `translateY(-${scrolled * 0.3}px)`;
+    // スクロール速度を 0.6 倍に設定し、しっかり上に動くようにする（追加した15個のオーブが湧いてきます）
+    wrap.style.transform = `translateY(-${scrolled * 0.6}px)`;
   });
 });
 
