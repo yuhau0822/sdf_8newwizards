@@ -203,7 +203,7 @@ body {
 }
 
 /* ==================================================
-   全セクション共通の浮遊オーブ（光の玉） 15個に増量
+   全セクション共通の浮遊オーブ（光の玉）
 ================================================== */
 .global-magic-orbs {
   position: fixed;
@@ -281,13 +281,9 @@ body {
 .bg-img-2 { top: -1%; right: 15%; animation: floatBg2 30s ease-in-out infinite; }
 .bg-img-3 { top: 11%; left: 15%; animation: floatBg3 28s ease-in-out infinite; }
 .bg-img-4 { top: 18%; right: 5%; animation: floatBg1 26s ease-in-out infinite; }
-.bg-img-5 { top: 25%; left: -5%; animation: floatBg2 32s ease-in-out infinite; }
 .bg-img-6 { top: 32%; right: 15%; animation: floatBg3 24s ease-in-out infinite; }
 .bg-img-7 { top: 38%; left: 5%; animation: floatBg1 29s ease-in-out infinite; }
-.bg-img-8 { top: 45%; right: -5%; animation: floatBg2 27s ease-in-out infinite; }
 .bg-img-9 { top: 58%; left: 15%; animation: floatBg3 31s ease-in-out infinite; }
-.bg-img-10 { top: 59%; right: 10%; animation: floatBg1 23s ease-in-out infinite; }
-.bg-img-11 { top: 66%; left: -2%; animation: floatBg2 28s ease-in-out infinite; }
 .bg-img-12 { top: 73%; right: 4%; animation: floatBg3 25s ease-in-out infinite; }
 .bg-img-13 { top: 80%; left: 4%; animation: floatBg1 30s ease-in-out infinite; }
 
@@ -499,7 +495,6 @@ header h1 {
   margin-bottom: 120px;
 }
 
-/* PC版用：左右からのスライドインアニメーション設定 */
 .profile-wrap.left,
 .profile-wrap.right {
   opacity: 0;
@@ -650,6 +645,108 @@ header h1 {
 .sns-link:hover .sns-icon-img {
   transform: translateY(-2px) scale(1.15);
   filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(217, 183, 108, 1)) drop-shadow(0 0 20px rgba(217, 183, 108, 0.8));
+}
+
+/* ==================================================
+   メッセージセクション
+================================================== */
+.message-section {
+  position: relative;
+  z-index: 2;
+  padding: 100px 0 0 0;
+  background: transparent;
+}
+
+.message-form-container {
+  background: rgba(7, 20, 38, 0.6);
+  border: 1px solid rgba(217,183,108,0.4);
+  padding: 40px 30px;
+  border-radius: 15px;
+  max-width: 600px;
+  margin: 0 auto 50px auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(217,183,108,0.1);
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+.magic-input, .magic-textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(217,183,108,0.5);
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Noto Serif JP', serif;
+  box-sizing: border-box;
+}
+.magic-textarea { resize: vertical; min-height: 120px; }
+.magic-input:focus, .magic-textarea:focus {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(217,183,108,0.4);
+}
+
+.floating-messages-area {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  transition: height 1s ease;
+  overflow: hidden; /* コンテナ外へのオーブのはみ出しを防ぐ */
+}
+
+/* 浮遊するオーブ（アニメーションはJSで制御） */
+.floating-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(180px, 35vw, 260px);
+  aspect-ratio: 1 / 1;
+  background: radial-gradient(circle at center, rgba(31, 60, 100, 0.8) 0%, rgba(7, 20, 38, 0.3) 70%);
+  border: 1px solid rgba(217,183,108,0.3);
+  border-radius: 50%;
+  padding: 20px;
+  color: white;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 30px rgba(217,183,108,0.2), inset 0 0 20px rgba(143,182,223,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  will-change: transform;
+}
+
+.floating-message:nth-child(even) {
+  background: radial-gradient(circle at center, rgba(217,183,108,0.15) 0%, rgba(7, 20, 38, 0.3) 70%);
+}
+
+.floating-message .msg-name {
+  font-family: 'Hina Mincho', serif;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: block;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+}
+
+.floating-message .msg-text {
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
 }
 
 /* ==================================================
@@ -832,12 +929,10 @@ header h1 {
     margin-bottom: 80px;
   }
   
-  /* ▼ 修正点：スマホ版でのフェードアップアニメーションをより滑らかに */
   .profile-wrap.left,
   .profile-wrap.right {
     opacity: 0 !important;
     transform: translate3d(0, 60px, 0) !important;
-    /* 動き出しを少しゆったり、減速を滑らかにする設定 */
     transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 
@@ -845,7 +940,6 @@ header h1 {
     opacity: 1 !important;
     transform: translate3d(0, 0, 0) !important;
   }
-  /* ▲ ここまで */
 
   .profile-image {
     position: relative;
@@ -894,6 +988,40 @@ header h1 {
   .spells { gap: 10px; margin: 40px auto; }
   .spells span { padding: 10px 16px; font-size: 12px; }
   .final > h2 { font-size: clamp(30px, 8vw, 50px); margin-top: 40px; }
+  
+  .message-form-container {
+    padding: 30px 20px;
+    margin: 0 20px 40px 20px;
+  }
+
+  /* ▼ メッセージタイトルのスマホ改行禁止処理 ▼ */
+  .message-section .title small {
+    font-size: clamp(12px, 3.5vw, 16px);
+  }
+  .message-section .title h2 {
+    font-size: clamp(20px, 5.5vw, 28px); /* 少し大きく */
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+  .message-section .title p {
+    font-size: clamp(11px, 3.2vw, 16px); /* 少し大きく */
+    white-space: nowrap;
+    letter-spacing: 0;
+  }
+  
+  /* ▼ オーブをスマホサイズに合わせて小さくする ▼ */
+  .floating-message {
+    width: clamp(130px, 35vw, 170px);
+    padding: 12px;
+  }
+  .floating-message .msg-name {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .floating-message .msg-text {
+    font-size: 11px;
+    line-height: 1.4;
+  }
 
   .magic-bg-img {
     width: clamp(200px, 55vw, 350px);
@@ -904,13 +1032,9 @@ header h1 {
   .bg-img-2 { top: 3%; right: -15%; }
   .bg-img-3 { top: 12%; left: -10%; }
   .bg-img-4 { top: 20%; right: 5%; }
-  .bg-img-5 { top: 34%; left: -15%; }
   .bg-img-6 { top: 42%; right: 13%; }
   .bg-img-7 { top: 30%; left: 0%; }
-  .bg-img-8 { top: 58%; right: -10%; }
   .bg-img-9 { top: 66%; left: -15%; }
-  .bg-img-10 { top: 60%; right: -15%; }
-  .bg-img-11 { top: 82%; left: -10%; }
   .bg-img-12 { top: 80%; right: 5%; }
   .bg-img-13 { top: 82%; left: 0%; }
 
@@ -992,7 +1116,6 @@ header h1 {
   .spells { margin: 20px auto; }
   .final > h2 { font-size: clamp(24px, 6vw, 40px); margin-top: 30px; }
 }
-
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1290,6 +1413,32 @@ header h1 {
 
     </section>
 
+    <!-- ▼▼ 応援メッセージセクション ▼▼ -->
+    <section class="message-section">
+      <div class="container">
+        <div class="title">
+          <small>SEND MAGIC</small>
+          <h2>魔法使いたちへのメッセージ</h2>
+          <p>新しいSDFを創る8人へ、応援の言葉を届けよう。</p>
+        </div>
+        
+        <div class="message-form-container">
+          <form id="magic-message-form">
+            <input type="text" id="sender-name" placeholder="あなたのお名前 (任意)" class="magic-input" maxlength="20">
+            <textarea id="message-text" placeholder="メッセージを入力してください..." class="magic-textarea" required maxlength="150"></textarea>
+            <button type="submit" class="gate-button" style="margin-top:10px;">送信</button>
+            <p id="form-status" style="display:none; font-size:14px; margin-top:15px; letter-spacing:1px;"></p>
+          </form>
+        </div>
+      </div>
+      
+      <!-- 浮遊するメッセージのコンテナ（左右いっぱいまで広げるためコンテナの外へ移動） -->
+      <div id="floating-messages-container" class="floating-messages-area">
+        <!-- JSで動的に追加されます -->
+      </div>
+    </section>
+    <!-- ▲▲ 応援メッセージセクション ▲▲ -->
+
     <!-- FINALセクション -->
     <div class="final-section-wrapper">
       
@@ -1337,11 +1486,19 @@ header h1 {
 <!-- JavaScriptスクリプト -->
 <script>
 // ==============================================
-// ★ ここで「合言葉」を設定します ★
+// ★ 1. 合言葉の設定 ★
 // ==============================================
 const SECRET_WORD = "198304SDF15"; 
 
+// ==============================================
+// ★ 2. Google Apps Script の ウェブアプリURL ★
+// ==============================================
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw81qcz3wrP3cWp1XSBOG8N-ADwpjTjD1barz8JFBLwRNi6C5JelbIKWidO5HmvQTSWSw/exec"; 
+
+
+// ==============================================
 // ゲートキーパー（合言葉）の処理
+// ==============================================
 const gatekeeper = document.getElementById('gatekeeper');
 const gateBtn = document.getElementById('gate-btn');
 const gateInput = document.getElementById('gate-password');
@@ -1350,18 +1507,20 @@ const mainContent = document.getElementById('main-content');
 
 function checkPassword() {
   if (gateInput.value === SECRET_WORD) {
-    // 正解の場合：ゲートを隠してメインコンテンツを表示
     gateError.style.display = 'none';
     gatekeeper.style.opacity = '0';
     gatekeeper.style.visibility = 'hidden';
     mainContent.classList.add('visible');
     
-    // 正解時に魔法のパーティクルを発生
     const rect = gateBtn.getBoundingClientRect();
     createMagicBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
     
+    // 合言葉に正解してページが表示されたら、過去のメッセージを読み込む
+    if(GAS_URL && GAS_URL !== "") {
+      fetchMessages();
+    }
+    
   } else {
-    // 不正解の場合：エラーメッセージを表示して入力欄を揺らす
     gateError.style.display = 'block';
     gateInput.style.transform = 'translateX(-10px)';
     setTimeout(() => gateInput.style.transform = 'translateX(10px)', 50);
@@ -1380,14 +1539,232 @@ gateInput.addEventListener('keypress', function(e) {
 
 
 // ==============================================
+// メッセージ送信 ＆ 動的オーブ物理演算
+// ==============================================
+const messageForm = document.getElementById('magic-message-form');
+const formStatus = document.getElementById('form-status');
+const messagesContainer = document.getElementById('floating-messages-container');
+
+let totalMessages = 0;
+let orbsData = []; // 物理演算用の配列
+let physicsAnimationFrame = null; // アニメーションループ用
+
+messageForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  if(!GAS_URL || GAS_URL === "") {
+      alert("メッセージ機能を使うには、Google Apps ScriptのURLを設定してください。");
+      return;
+  }
+
+  const name = document.getElementById('sender-name').value || 'SDFメンバー';
+  const message = document.getElementById('message-text').value;
+  const submitBtn = messageForm.querySelector('button');
+  
+  submitBtn.disabled = true;
+  submitBtn.innerText = '送信中...';
+  
+  const payload = { name: name, message: message };
+
+  // 送信した瞬間にオーブを追加し、エリアを広げる
+  totalMessages++;
+  updateContainerHeight();
+  spawnOrb(name, message, totalMessages - 1);
+
+  // GASへデータ送信
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    messageForm.reset();
+    submitBtn.disabled = false;
+    submitBtn.innerText = 'メッセージを送る';
+    formStatus.style.display = 'block';
+    formStatus.style.color = '#d9b76c';
+    formStatus.innerText = '送信されました！';
+    setTimeout(() => formStatus.style.display = 'none', 4000);
+  })
+  .catch(err => {
+    submitBtn.disabled = false;
+    submitBtn.innerText = 'メッセージを送る';
+    formStatus.style.display = 'block';
+    formStatus.style.color = '#ff7676';
+    formStatus.innerText = 'メッセージが届きませんでした。通信環境をご確認ください。';
+  });
+});
+
+// スプレッドシートからメッセージを取得
+function fetchMessages() {
+  fetch(GAS_URL)
+    .then(res => res.json())
+    .then(data => {
+      totalMessages = data.length;
+      updateContainerHeight(); // 件数に合わせて高さを確保
+      
+      messagesContainer.innerHTML = ''; // 一旦クリア
+      orbsData = []; // 物理演算データもリセット
+      
+      data.forEach((msg, index) => {
+        spawnOrb(msg.name, msg.message, index);
+      });
+    })
+    .catch(err => console.error("メッセージの取得に失敗しました", err));
+}
+
+// メッセージ数に応じてコンテナの高さを伸ばす
+function updateContainerHeight() {
+  const requiredHeight = Math.max(300, Math.ceil(totalMessages / 2) * 200);
+  messagesContainer.style.height = requiredHeight + 'px';
+}
+
+// オーブを生成して配置し、物理演算ループに追加する
+function spawnOrb(name, text, index) {
+  const el = document.createElement('div');
+  el.className = 'floating-message';
+  
+  const nameEl = document.createElement('span');
+  nameEl.className = 'msg-name';
+  nameEl.innerText = name;
+  
+  const textEl = document.createElement('span');
+  textEl.className = 'msg-text';
+  textEl.innerText = text;
+  
+  el.appendChild(nameEl);
+  el.appendChild(textEl);
+  
+  messagesContainer.appendChild(el);
+  
+  // 要素を追加したあとに実際のサイズを取得
+  const size = el.offsetWidth || 200;
+  const containerWidth = messagesContainer.clientWidth;
+  const containerHeight = parseInt(messagesContainer.style.height || 300);
+  
+  // 初期配置
+  const sectionHeight = containerHeight / (totalMessages || 1);
+  const baseY = index * sectionHeight;
+  const randomY = baseY + (Math.random() * sectionHeight * 0.5);
+  
+  let startX = (containerWidth - size) * Math.random();
+  let startY = Math.min(Math.max(0, randomY), containerHeight - size);
+  
+    // 初期速度を小さくして滑らかに（スマホはさらに下げる）
+  const isMobile = window.innerWidth <= 850;
+  const speedMultiplier = isMobile ? 0.15 : 0.5;
+  let vx = (Math.random() - 0.5) * speedMultiplier;
+  let vy = (Math.random() - 0.5) * speedMultiplier;
+  if(vx === 0) vx = isMobile ? 0.05 : 0.2;
+  if(vy === 0) vy = isMobile ? 0.05 : 0.2;
+
+  
+  orbsData.push({
+    el: el,
+    x: startX,
+    y: startY,
+    vx: vx,
+    vy: vy,
+    size: size
+  });
+  
+  // 物理演算ループが動いていなければ開始する
+  if(!physicsAnimationFrame) {
+    physicsAnimationFrame = requestAnimationFrame(updatePhysicsLoop);
+  }
+}
+
+// 物理演算（ぶつかり判定・跳ね返り）のループ関数
+function updatePhysicsLoop() {
+  const cWidth = messagesContainer.clientWidth;
+  const cHeight = messagesContainer.clientHeight;
+  const isMobile = window.innerWidth <= 850; // ★スマホ判定を追加
+  
+  // 1. 移動と壁の跳ね返り
+  for(let i=0; i<orbsData.length; i++) {
+    let o = orbsData[i];
+    o.x += o.vx;
+    o.y += o.vy;
+    
+    // 画面端で跳ね返る
+    if(o.x <= 0) { o.x = 0; o.vx *= -1; }
+    if(o.x + o.size >= cWidth) { o.x = cWidth - o.size; o.vx *= -1; }
+    if(o.y <= 0) { o.y = 0; o.vy *= -1; }
+    if(o.y + o.size >= cHeight) { o.y = cHeight - o.size; o.vy *= -1; }
+  }
+  
+  // 2. オーブ同士の衝突判定と反発
+  for(let i = 0; i < orbsData.length; i++) {
+    for(let j = i + 1; j < orbsData.length; j++) {
+      let o1 = orbsData[i];
+      let o2 = orbsData[j];
+      
+      let dx = (o2.x + o2.size/2) - (o1.x + o1.size/2);
+      let dy = (o2.y + o2.size/2) - (o1.y + o1.size/2);
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      
+      let minDist = (o1.size/2 + o2.size/2) + 15; 
+      
+      if(dist < minDist && dist > 0) {
+        let overlap = minDist - dist;
+        let nx = dx / dist;
+        let ny = dy / dist;
+        
+        // ★スマホの場合は反発力を1/5にしてゆっくり押し返す
+        let forceBase = isMobile ? 0.0001 : 0.0005;
+        let force = overlap * forceBase; 
+        
+        o1.vx -= nx * force;
+        o1.vy -= ny * force;
+        o2.vx += nx * force;
+        o2.vy += ny * force;
+      }
+    }
+  }
+  
+  // 3. 速度の制限と実際の要素への適用
+  // ★スマホの場合は最大速度と最小速度を極力下げる
+  let maxSpeed = isMobile ? 0.08 : 0.25; 
+  let minSpeed = isMobile ? 0.01 : 0.05; 
+  
+  for(let i = 0; i < orbsData.length; i++) {
+    let o = orbsData[i];
+    let speed = Math.sqrt(o.vx*o.vx + o.vy*o.vy);
+    
+    if (speed > maxSpeed) {
+      o.vx = (o.vx / speed) * maxSpeed;
+      o.vy = (o.vy / speed) * maxSpeed;
+    } else if (speed < minSpeed) {
+      o.vx = (o.vx / speed) * minSpeed;
+      o.vy = (o.vy / speed) * minSpeed;
+    }
+    
+    // 画面に描画
+    o.el.style.transform = `translate3d(${o.x}px, ${o.y}px, 0)`;
+  }
+  
+  physicsAnimationFrame = requestAnimationFrame(updatePhysicsLoop);
+}
+
+
+// 画面リサイズ時にオーブのサイズ情報を更新（スマホ縦横切り替えなどへの対応）
+window.addEventListener('resize', () => {
+  orbsData.forEach(o => {
+    o.size = o.el.offsetWidth || 200;
+  });
+});
+
+
+// ==============================================
 // 既存の魔法演出スクリプト
 // ==============================================
 
 // クリック時の魔法パーティクル生成
 document.addEventListener("click", function(event) {
-  // 合言葉画面が出ているときは、メインコンテンツ外のクリックでも出ないようにする
   if (mainContent.classList.contains('visible') || event.target.closest('#gatekeeper')) {
-    createMagicBurst(event.clientX, event.clientY);
+    if(!event.target.closest('button')) {
+      createMagicBurst(event.clientX, event.clientY);
+    }
   }
 });
 
@@ -1405,32 +1782,24 @@ function createMagicBurst(x, y) {
   }
 }
 
-// ▼ 修正点：スクロールに応じたフェードイン監視（幹部紹介用） ▼
+// 幹部紹介用のフェードイン監視
 const profiles = document.querySelectorAll(".profile-wrap");
-
-// スマホ画面など縦長レイアウトで発火が遅れないように調整
 const observerOptions = {
-  rootMargin: "0px 0px -5% 0px", // 画面の下から5%の位置で判定
-  threshold: window.innerWidth <= 850 ? 0.05 : 0.15 // スマホは5%見えたら即発火
+  rootMargin: "0px 0px -5% 0px",
+  threshold: window.innerWidth <= 850 ? 0.05 : 0.15 
 };
-
 const observer = new IntersectionObserver(
   function(entries, obs) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
         entry.target.classList.add("show");
-        // スマホ等でのスクロールのカクつき（処理落ち）を防ぐため、一度表示したら監視を解除
         obs.unobserve(entry.target);
       }
     });
   },
   observerOptions
 );
-
-profiles.forEach(function(profile) {
-  observer.observe(profile);
-});
-
+profiles.forEach(function(profile) { observer.observe(profile); });
 
 // スクロール時のオーブ追従エフェクト
 window.addEventListener("scroll", function() {
