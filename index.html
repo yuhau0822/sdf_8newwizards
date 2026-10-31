@@ -98,8 +98,15 @@ body {
   color: var(--text);
 }
 
-.gate-input {
+/* ▼ ペーストボタン用のラッパーとボタンのスタイル ▼ */
+.gate-input-wrapper {
+  display: flex;
+  gap: 10px;
   width: 100%;
+}
+
+.gate-input {
+  flex-grow: 1;
   padding: 12px 15px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(217,183,108,0.5);
@@ -118,6 +125,31 @@ body {
   border-color: var(--gold);
   box-shadow: 0 0 15px rgba(217,183,108,0.4);
 }
+
+.gate-paste-button {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(217,183,108,0.5);
+  border-radius: 5px;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0 12px; /* 横幅を少しスッキリめに調整 */
+  font-family: 'Noto Serif JP', serif; /* 全体のフォントと合わせる */
+  font-size: 13px; /* 小さめの文字サイズに */
+  letter-spacing: 1px; /* 少し字間を空ける */
+  white-space: nowrap; /* 文字の折り返しを防ぐ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+
+.gate-paste-button:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(217,183,108,0.4);
+}
+/* ▲ ペーストボタン用スタイルここまで ▲ */
 
 .gate-button {
   margin-top: 20px;
@@ -697,6 +729,9 @@ header h1 {
   min-height: 200px;
   transition: height 1s ease;
   overflow: hidden; /* コンテナ外へのオーブのはみ出しを防ぐ */
+  /* ▼ 応援メッセージ入力と浮遊エリア、及びファイナルセクションの間をフェードにする処理 ▼ */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
 /* 浮遊するオーブ（アニメーションはJSで制御） */
@@ -1050,6 +1085,22 @@ header h1 {
     text-indent: 4px;
     white-space: nowrap;
   }
+    /* ▼ ゲートキーパー（合言葉画面）のスマホ調整 ▼ */
+  .gate-content {
+    padding: 30px 20px; /* 左右の余白を小さくして内部を広くする */
+    width: 90%;
+  }
+
+  /* ペーストボタンをバランス良く配置 */
+  .gate-input-wrapper {
+    gap: 8px; /* 入力欄とボタンの隙間を少し狭める */
+  }
+
+  .gate-paste-button {
+    padding: 0 10px; /* ボタンの横幅を少しスリムに */
+    font-size: 12px; /* スマホに合わせて文字を少し小さく */
+  }
+
 }
 
 /* ==================================================
@@ -1139,7 +1190,15 @@ header h1 {
   <div class="gate-content">
     <h2>秘密の扉</h2>
     <p>SDFの魔法の世界へ入るための<br>合言葉を入力してください</p>
-    <input type="password" id="gate-password" class="gate-input" placeholder="合言葉を入力">
+    
+    <!-- ▼ ペーストボタン付きの入力欄 ▼ -->
+    <div class="gate-input-wrapper">
+      <input type="password" id="gate-password" class="gate-input" placeholder="合言葉を入力">
+            <button id="gate-paste-btn" class="gate-paste-button">
+        ペースト
+      </button>
+    </div>
+    
     <button id="gate-btn" class="gate-button">扉を開く</button>
     <p id="gate-error">合言葉が違います</p>
   </div>
@@ -1156,7 +1215,7 @@ header h1 {
     <div class="parallax-wrap"><div class="magic-orb orb-3"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-4"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-5"></div></div>
-    <!-- ▼ 追加した10個（スクロールして上に移動しても下から湧き続けるように配置） ▼ -->
+    <!-- 追加した10個 -->
     <div class="parallax-wrap"><div class="magic-orb orb-6"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-7"></div></div>
     <div class="parallax-wrap"><div class="magic-orb orb-8"></div></div>
@@ -1432,7 +1491,7 @@ header h1 {
         </div>
       </div>
       
-      <!-- 浮遊するメッセージのコンテナ（左右いっぱいまで広げるためコンテナの外へ移動） -->
+      <!-- 浮遊するメッセージのコンテナ（上下をフェード化） -->
       <div id="floating-messages-container" class="floating-messages-area">
         <!-- JSで動的に追加されます -->
       </div>
@@ -1504,6 +1563,20 @@ const gateBtn = document.getElementById('gate-btn');
 const gateInput = document.getElementById('gate-password');
 const gateError = document.getElementById('gate-error');
 const mainContent = document.getElementById('main-content');
+
+// ペーストボタンの処理
+const gatePasteBtn = document.getElementById('gate-paste-btn');
+if (gatePasteBtn) {
+  gatePasteBtn.addEventListener('click', async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      gateInput.value = text;
+    } catch (err) {
+      console.error('クリップボードからの読み込みに失敗しました', err);
+      alert('クリップボードの読み込みが許可されていません。手動でペーストしてください。');
+    }
+  });
+}
 
 function checkPassword() {
   if (gateInput.value === SECRET_WORD) {
@@ -1678,7 +1751,7 @@ function spawnOrb(name, text, index) {
 function updatePhysicsLoop() {
   const cWidth = messagesContainer.clientWidth;
   const cHeight = messagesContainer.clientHeight;
-  const isMobile = window.innerWidth <= 850; // ★スマホ判定を追加
+  const isMobile = window.innerWidth <= 850;
   
   // 1. 移動と壁の跳ね返り
   for(let i=0; i<orbsData.length; i++) {
@@ -1710,7 +1783,7 @@ function updatePhysicsLoop() {
         let nx = dx / dist;
         let ny = dy / dist;
         
-        // ★スマホの場合は反発力を1/5にしてゆっくり押し返す
+        // スマホの場合は反発力を1/5にしてゆっくり押し返す
         let forceBase = isMobile ? 0.0001 : 0.0005;
         let force = overlap * forceBase; 
         
@@ -1723,7 +1796,7 @@ function updatePhysicsLoop() {
   }
   
   // 3. 速度の制限と実際の要素への適用
-  // ★スマホの場合は最大速度と最小速度を極力下げる
+  // スマホの場合は最大速度と最小速度を極力下げる
   let maxSpeed = isMobile ? 0.08 : 0.25; 
   let minSpeed = isMobile ? 0.01 : 0.05; 
   
@@ -1747,7 +1820,7 @@ function updatePhysicsLoop() {
 }
 
 
-// 画面リサイズ時にオーブのサイズ情報を更新（スマホ縦横切り替えなどへの対応）
+// 画面リサイズ時にオーブのサイズ情報を更新
 window.addEventListener('resize', () => {
   orbsData.forEach(o => {
     o.size = o.el.offsetWidth || 200;
@@ -1823,9 +1896,8 @@ setInterval(function() {
       particle.remove();
     }, 3000);
   }
-}, 700);
+}, 500);
 
 </script>
-
 </body>
 </html>
