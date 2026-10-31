@@ -1087,19 +1087,30 @@ header h1 {
   }
     /* ▼ ゲートキーパー（合言葉画面）のスマホ調整 ▼ */
   .gate-content {
-    padding: 30px 20px; /* 左右の余白を小さくして内部を広くする */
-    width: 90%;
+    padding: 30px 15px; /* スマホ用に余白を最適化 */
+    width: 85%; /* 枠の幅を少し小さくして画面内に収める */
+    box-sizing: border-box; /* はみ出し防止 */
   }
 
-  /* ペーストボタンをバランス良く配置 */
   .gate-input-wrapper {
-    gap: 8px; /* 入力欄とボタンの隙間を少し狭める */
+    display: flex;
+    flex-direction: column; /* 入力欄とペーストボタンを「縦並び」にする */
+    gap: 12px; /* 入力欄とボタンの間の隙間 */
+    width: 100%;
+  }
+
+  .gate-input {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .gate-paste-button {
-    padding: 0 10px; /* ボタンの横幅を少しスリムに */
-    font-size: 12px; /* スマホに合わせて文字を少し小さく */
+    width: 100%; /* ペーストボタンを横幅いっぱいにして押しやすくする */
+    padding: 12px 0;
+    font-size: 14px;
+    letter-spacing: 2px;
   }
+
 
 }
 
